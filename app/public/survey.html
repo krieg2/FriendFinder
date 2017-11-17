@@ -156,7 +156,7 @@
               </p>
               <!-- Submit Button -->
               <br><br>
-              <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit" data-toggle="modal" data-target="#myModal">Submit</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit">Submit</button>
               <br><br>
             </div>
           </div>
@@ -186,7 +186,8 @@
 
     <script type="text/javascript">
 
-          // Chosen CSS
+        // Chosen configuration
+        // applied to all 'chosen-select' elements.
         var config = {
             allow_single_deselect: true,
             placeholder_text_single: "Select an option...",
@@ -196,9 +197,11 @@
         }
         $(".chosen-select").chosen(config);
         
+        // Here is where the survey submit button is
+        // handled. AJAX POST is sent to the server.
         $("#submit").on("click", function(){
 
-            if($("#name").val() !== "" && $("#photo").val() !== ""){
+            if( validateSurvey() ){
 
                 var userData = {
                     name: $("#name").val(),
@@ -219,11 +222,46 @@
                 $.post(currentURL + "/api/friends", userData, function(response){
 
                     // Response should contain the best matching friend.
-                    $("#userName").text(response.name);
-                    $("#userImage").attr("src", response.photo);
+                    if(response){
+                        if(response.alert){
+                            alert(response.alert);
+                        } else{
+                            $("#userName").text(response.name);
+                            $("#userImage").attr("src", response.photo);
+
+                            $("#myModal").modal("toggle");
+                        }
+                    }
                 });
+            } else{
+
+                alert("Please fill out all survey fields.");
             }
         });
+
+        // Ensure that all survey fields are populated.
+        function validateSurvey(){
+
+            var result = false;
+
+            if($("#name").val() !== "" &&
+               $("#photo").val() !== "" &&
+               $("#q1").val() !== "" &&
+               $("#q2").val() !== "" &&
+               $("#q3").val() !== "" &&
+               $("#q4").val() !== "" &&
+               $("#q5").val() !== "" &&
+               $("#q6").val() !== "" &&
+               $("#q7").val() !== "" &&
+               $("#q8").val() !== "" &&
+               $("#q9").val() !== "" &&
+               $("#q10").val() !== ""){
+
+                result = true;
+            }
+
+            return result;
+        }
 
     </script>
 </body>
