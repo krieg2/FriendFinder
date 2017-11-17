@@ -1,24 +1,41 @@
-var friendData = require("../data/friends.js");
+var path = require("path");
+var friendData = require(path.join(__dirname + "/../data/friends.js"));
 
 module.exports = function(app){
 
-	app.get("/api/friends", function(req, res) {
-		res.json(friendData);
-	});
+    app.get("/api/friends", function(req, res){
+        res.json(friendData);
+    });
 
-	app.post("/api/friends", function(req, res) {
-/*
-{ name: 'Tobias',
-  photo: 'http://cdn1.alloy.com/wp-content/uploads/2013/05/tobias-funke.png',
-  'scores[]': [ '1', '2', '3', '4', '5', '4', '3', '2', '1', '1' ] }
-  */
+    app.post("/api/friends", function(req, res){
 
-  		var newFriend = req.body;
-  		newFriend.scores = newFriend.scores.map(function(currentValue, index, arr){
-  			return parseInt(currentValue);
-  		});
-		console.log(newFriend);
-		friendData.push(newFriend);
-		res.json(friendData);
-	});
+        var newFriend = req.body;
+
+        // Convert the scores to integers.
+        newFriend.scores = newFriend.scores.map(function(currentValue, index, arr){
+            return parseInt(currentValue);
+        });
+        
+        // Find the user with the least difference in score.
+        let minDiff = 0;
+        let minDiffIdx = -1;
+        for(let i=0; i < friendData.length; i++){
+            let scoreDiff = 0;
+            for(let j=0; j < 10; j++){
+                scoreDiff += Math.abs(friendData[i].scores[j] - newFriend.scores[j]);
+            }
+            if(i === 0 || scoreDiff < minDiff){
+                minDiff = scoreDiff;
+                minDiffIdx = i;
+            }
+        }
+
+        // Return the best match.
+        if(minDiffIdx !== -1){
+            res.json(friendData[minDiffIdx]);
+        }
+
+        // Store the new user.
+        friendData.push(newFriend);
+    });
 }
