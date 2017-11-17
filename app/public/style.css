@@ -45,11 +45,13 @@ a {
   font-family: 'Helvetica', 'Arial', 'sans-serif';
   letter-spacing: 2px;
   text-transform: uppercase;
+  cursor: pointer;
 }
 
 .btn-xl {
   font-size: 11px;
   padding: 15px 45px;
+  margin-bottom: 25px;
 }
 
 .chosen-select, .chosen-container {
@@ -57,7 +59,7 @@ a {
 }
 
 .heading {
-	padding-top: 125px;
+	padding-top: 100px;
 }
 
 footer {
