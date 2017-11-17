@@ -66,3 +66,12 @@ footer {
   position: absolute;
   bottom: 0;
 }
+
+.modal {
+  color: black;
+}
+
+#matchImg {
+  width: 300px;
+  height: 300px;
+}
